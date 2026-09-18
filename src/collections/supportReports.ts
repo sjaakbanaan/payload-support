@@ -26,7 +26,14 @@ export const createSupportReportsCollection = (
       ...options.access,
     },
     admin: {
-      defaultColumns: ['title', 'status', 'externalUrl', 'createdAt'],
+      defaultColumns: [
+        'title',
+        'reporterName',
+        'reporterEmail',
+        'status',
+        'externalUrl',
+        'createdAt',
+      ],
       description: tLabel('description') as NonNullable<CollectionConfig['admin']>['description'],
       group: {
         en: en[NAMESPACE].group,
@@ -84,6 +91,10 @@ export const createSupportReportsCollection = (
         name: 'externalUrl',
         type: 'text',
         admin: {
+          components: {
+            Cell: 'payload-support/rsc#ExternalUrlCell',
+            Field: 'payload-support/rsc#ExternalUrlField',
+          },
           description: tLabel('externalUrlDescription'),
           position: 'sidebar',
           readOnly: true,

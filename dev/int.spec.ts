@@ -54,7 +54,26 @@ const pluginI18n = (lang: 'en' | 'nl') =>
 
 describe('payload-support', () => {
   test('adds the support-reports collection', () => {
-    expect(payload.collections['support-reports']).toBeDefined()
+    const collection = payload.collections['support-reports']
+    expect(collection).toBeDefined()
+    expect(collection.config.admin.defaultColumns).toEqual([
+      'title',
+      'reporterName',
+      'reporterEmail',
+      'status',
+      'externalUrl',
+      'createdAt',
+    ])
+
+    const externalUrl = collection.config.fields.find(
+      (field) => 'name' in field && field.name === 'externalUrl',
+    )
+    expect(
+      externalUrl && 'admin' in externalUrl ? externalUrl.admin?.components : undefined,
+    ).toMatchObject({
+      Cell: 'payload-support/rsc#ExternalUrlCell',
+      Field: 'payload-support/rsc#ExternalUrlField',
+    })
   })
 
   test('merges English and Dutch plugin translations', () => {
