@@ -74,6 +74,7 @@ export const createExternalTicketHook =
         data: {
           errorMessage: null,
           externalId: ticket.id,
+          externalState: ticket.workflowState ?? null,
           externalUrl: ticket.url,
           status: 'sent',
         },

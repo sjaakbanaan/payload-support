@@ -6,6 +6,7 @@ export const en = {
     errorMessage: 'Error message',
     externalId: 'External ID',
     externalIdDescription: 'Shortcut story ID',
+    externalState: 'Shortcut state',
     externalUrl: 'External URL',
     externalUrlDescription: 'Open this URL in Shortcut',
     group: 'Support',

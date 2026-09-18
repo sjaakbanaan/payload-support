@@ -6,6 +6,7 @@ import type { PayloadSupportPluginConfig } from './types.js'
 
 import { createSupportReportsCollection } from './collections/supportReports.js'
 import { sanitizePluginConfig } from './defaults.js'
+import { createSyncExternalStateTask } from './jobs/syncExternalState.js'
 import { translations } from './translations/index.js'
 
 export const payloadSupportPlugin =
@@ -19,9 +20,14 @@ export const payloadSupportPlugin =
 
     const options = sanitizePluginConfig(pluginOptions)
     const supportReports = createSupportReportsCollection(options)
+    const syncTask = createSyncExternalStateTask(options)
 
     return {
       ...incomingConfig,
       collections: [...(incomingConfig.collections || []), supportReports],
+      jobs: {
+        ...incomingConfig.jobs,
+        tasks: [...(incomingConfig.jobs?.tasks || []), syncTask],
+      },
     }
   }

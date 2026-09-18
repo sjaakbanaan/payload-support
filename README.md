@@ -31,6 +31,10 @@ export default buildConfig({
       },
     }),
   ],
+  // Required to keep Shortcut workflow state fresh on reports:
+  jobs: {
+    autoRun: [{ cron: '* * * * *', queue: 'payload-support' }],
+  },
 })
 ```
 
@@ -50,9 +54,20 @@ When `enabled` is `false`, the `support-reports` collection stays in the schema 
 1. Adds a **Support Reports** collection to the admin panel.
 2. On create, converts the Lexical description to Markdown (so **bold** in Payload stays `**bold**` in Shortcut).
 3. Creates a Shortcut story from your story template (`POST /api/v3/stories/from-template`).
-4. Stores the Shortcut story ID and URL on the report.
+4. Stores the Shortcut story ID, URL, and workflow state name on the report.
+5. Registers a scheduled job (`syncSupportReportStates`, every 10 minutes on queue `payload-support`) that refreshes stored Shortcut states for sent reports.
 
 Default access is any authenticated user. Override `access` or lock the collection down with your own RBAC plugin.
+
+### Running the state-sync job
+
+The plugin only **registers** the scheduled task. Something in your app must **queue and run** jobs for the `payload-support` queue:
+
+- Dedicated server: `pnpm payload jobs:run --cron "* * * * *" --queue payload-support --handle-schedules`
+- Or `jobs.autoRun` as in the usage example above
+- Serverless: call `/api/payload-jobs/run?queue=payload-support` from an external cron (e.g. Vercel Cron)
+
+Without a runner, `externalState` is still set when a report is created, but it will not update when the story moves in Shortcut.
 
 ## Development
 

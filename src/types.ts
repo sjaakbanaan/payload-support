@@ -44,6 +44,8 @@ export type CreateBugInput = {
 export type CreatedTicket = {
   id: string
   url: string
+  /** Shortcut workflow column name, when resolvable. */
+  workflowState?: null | string
 }
 
 export type SupportProviderAdapter = {

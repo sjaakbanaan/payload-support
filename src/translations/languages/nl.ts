@@ -6,6 +6,7 @@ export const nl = {
     errorMessage: 'Foutmelding',
     externalId: 'Extern ID',
     externalIdDescription: 'Shortcut story-ID',
+    externalState: 'Shortcut-status',
     externalUrl: 'Externe URL',
     externalUrlDescription: 'Open deze URL in Shortcut',
     group: 'Support',

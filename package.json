@@ -1,6 +1,6 @@
 {
   "name": "payload-support",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Payload CMS plugin for filing bug reports to Shortcut",
   "license": "MIT",
   "type": "module",

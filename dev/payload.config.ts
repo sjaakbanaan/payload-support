@@ -66,6 +66,9 @@ const buildConfigWithMemoryDB = async () => {
     i18n: {
       supportedLanguages: { en, nl },
     },
+    jobs: {
+      autoRun: [{ cron: '* * * * *', queue: 'payload-support' }],
+    },
     onInit: async (payload) => {
       await seed(payload)
     },

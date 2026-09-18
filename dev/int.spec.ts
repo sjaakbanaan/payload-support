@@ -61,9 +61,14 @@ describe('payload-support', () => {
       'reporterName',
       'reporterEmail',
       'status',
+      'externalState',
       'externalUrl',
       'createdAt',
     ])
+
+    expect(payload.config.jobs?.tasks?.some((task) => task.slug === 'syncSupportReportStates')).toBe(
+      true,
+    )
 
     const externalUrl = collection.config.fields.find(
       (field) => 'name' in field && field.name === 'externalUrl',
@@ -87,17 +92,28 @@ describe('payload-support', () => {
   })
 
   test('creates a Shortcut bug from a support report', async () => {
-    const shortcutFetch = vi.fn<typeof fetch>(() =>
-      Promise.resolve(
+    const shortcutFetch = vi.fn<typeof fetch>((url) => {
+      const href = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url
+      if (href.endsWith('/workflows')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify([{ states: [{ id: 9, name: 'Ready for Development' }] }]),
+            { headers: { 'Content-Type': 'application/json' }, status: 200 },
+          ),
+        )
+      }
+
+      return Promise.resolve(
         new Response(
           JSON.stringify({
             id: 555,
             app_url: 'https://app.shortcut.com/eagerly/story/555',
+            workflow_state_id: 9,
           }),
           { headers: { 'Content-Type': 'application/json' }, status: 201 },
         ),
-      ),
-    )
+      )
+    })
 
     vi.stubGlobal('fetch', shortcutFetch)
 
@@ -116,8 +132,18 @@ describe('payload-support', () => {
       expect(report.status).toBe('sent')
       expect(report.externalId).toBe('555')
       expect(report.externalUrl).toBe('https://app.shortcut.com/eagerly/story/555')
+      expect(report.externalState).toBe('Ready for Development')
 
-      const rawBody = shortcutFetch.mock.calls[0]?.[1]?.body
+      const createCall = shortcutFetch.mock.calls.find(([requestUrl]) => {
+        const href =
+          typeof requestUrl === 'string'
+            ? requestUrl
+            : requestUrl instanceof URL
+              ? requestUrl.href
+              : requestUrl.url
+        return href.includes('/stories')
+      })
+      const rawBody = createCall?.[1]?.body
       if (typeof rawBody !== 'string') {
         throw new Error('expected fetch body to be a string')
       }

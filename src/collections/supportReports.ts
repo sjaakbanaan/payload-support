@@ -31,6 +31,7 @@ export const createSupportReportsCollection = (
         'reporterName',
         'reporterEmail',
         'status',
+        'externalState',
         'externalUrl',
         'createdAt',
       ],
@@ -86,6 +87,15 @@ export const createSupportReportsCollection = (
           readOnly: true,
         },
         label: tLabel('externalId'),
+      },
+      {
+        name: 'externalState',
+        type: 'text',
+        admin: {
+          position: 'sidebar',
+          readOnly: true,
+        },
+        label: tLabel('externalState'),
       },
       {
         name: 'externalUrl',
