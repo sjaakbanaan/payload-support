@@ -4,6 +4,10 @@ import type { SanitizedPayloadSupportConfig } from '../types.js'
 
 import { descriptionEditor } from '../fields/descriptionEditor.js'
 import { createExternalTicketHook } from '../hooks/createExternalTicket.js'
+import { NAMESPACE } from '../translations/constants.js'
+import { tLabel } from '../translations/index.js'
+import { en } from '../translations/languages/en.js'
+import { nl } from '../translations/languages/nl.js'
 
 const authenticated = ({ req: { user } }: { req: { user: unknown } }) => Boolean(user)
 
@@ -23,9 +27,11 @@ export const createSupportReportsCollection = (
     },
     admin: {
       defaultColumns: ['title', 'status', 'externalUrl', 'createdAt'],
-      description:
-        'Creating a report sends a bug to Shortcut. Title and description cannot be changed after it is sent.',
-      group: 'Support',
+      description: tLabel('description') as NonNullable<CollectionConfig['admin']>['description'],
+      group: {
+        en: en[NAMESPACE].group,
+        nl: nl[NAMESPACE].group,
+      },
       hidden: !options.enabled,
       useAsTitle: 'title',
     },
@@ -36,6 +42,7 @@ export const createSupportReportsCollection = (
         access: {
           update: sentIsReadOnly,
         },
+        label: tLabel('title'),
         required: true,
       },
       {
@@ -45,6 +52,7 @@ export const createSupportReportsCollection = (
           update: sentIsReadOnly,
         },
         editor: descriptionEditor,
+        label: tLabel('descriptionField'),
         required: true,
       },
       {
@@ -55,29 +63,32 @@ export const createSupportReportsCollection = (
           readOnly: true,
         },
         defaultValue: 'pending',
+        label: tLabel('status'),
         options: [
-          { label: 'Pending', value: 'pending' },
-          { label: 'Sent', value: 'sent' },
-          { label: 'Failed', value: 'failed' },
+          { label: tLabel('statusPending'), value: 'pending' },
+          { label: tLabel('statusSent'), value: 'sent' },
+          { label: tLabel('statusFailed'), value: 'failed' },
         ],
       },
       {
         name: 'externalId',
         type: 'text',
         admin: {
-          description: 'Shortcut story ID',
+          description: tLabel('externalIdDescription'),
           position: 'sidebar',
           readOnly: true,
         },
+        label: tLabel('externalId'),
       },
       {
         name: 'externalUrl',
         type: 'text',
         admin: {
-          description: 'Open this URL in Shortcut',
+          description: tLabel('externalUrlDescription'),
           position: 'sidebar',
           readOnly: true,
         },
+        label: tLabel('externalUrl'),
       },
       {
         name: 'errorMessage',
@@ -87,6 +98,7 @@ export const createSupportReportsCollection = (
           position: 'sidebar',
           readOnly: true,
         },
+        label: tLabel('errorMessage'),
       },
       {
         name: 'reporterName',
@@ -95,6 +107,7 @@ export const createSupportReportsCollection = (
           position: 'sidebar',
           readOnly: true,
         },
+        label: tLabel('reporterName'),
       },
       {
         name: 'reporterEmail',
@@ -103,6 +116,7 @@ export const createSupportReportsCollection = (
           position: 'sidebar',
           readOnly: true,
         },
+        label: tLabel('reporterEmail'),
       },
     ],
     hooks: {
@@ -128,8 +142,8 @@ export const createSupportReportsCollection = (
       ],
     },
     labels: {
-      plural: 'Support Reports',
-      singular: 'Support Report',
+      plural: tLabel('plural'),
+      singular: tLabel('singular'),
     },
     timestamps: true,
   }

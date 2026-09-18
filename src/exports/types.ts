@@ -1,4 +1,8 @@
 export type {
+  PayloadSupportTranslationKeys,
+  PayloadSupportTranslations,
+} from '../translations/index.js'
+export type {
   CollectionOverride,
   CreateBugInput,
   CreatedTicket,

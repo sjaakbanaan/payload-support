@@ -56,6 +56,11 @@
     "@payloadcms/db-sqlite": "3.90.0",
     "@payloadcms/eslint-config": "3.28.0",
     "@payloadcms/next": "3.90.0",
+    "@payloadcms/plugin-form-builder": "3.90.0",
+    "@payloadcms/plugin-nested-docs": "3.90.0",
+    "@payloadcms/plugin-redirects": "3.90.0",
+    "@payloadcms/plugin-search": "3.90.0",
+    "@payloadcms/plugin-seo": "3.90.0",
     "@payloadcms/richtext-lexical": "3.90.0",
     "@payloadcms/ui": "3.90.0",
     "@playwright/test": "1.58.2",
@@ -127,6 +132,5 @@
       "unrs-resolver"
     ]
   },
-  "registry": "https://registry.npmjs.org/",
-  "dependencies": {}
+  "registry": "https://registry.npmjs.org/"
 }

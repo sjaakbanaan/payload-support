@@ -1,0 +1,23 @@
+export const nl = {
+  'plugin-payload-support': {
+    description:
+      'Het aanmaken van een melding stuurt een bug naar Shortcut. Titel en beschrijving kunnen niet meer worden gewijzigd nadat de melding is verstuurd.',
+    descriptionField: 'Beschrijving',
+    errorMessage: 'Foutmelding',
+    externalId: 'Extern ID',
+    externalIdDescription: 'Shortcut story-ID',
+    externalUrl: 'Externe URL',
+    externalUrlDescription: 'Open deze URL in Shortcut',
+    group: 'Support',
+    plural: 'Supportmeldingen',
+    reportedBy: 'Gemeld door {{who}}',
+    reporterEmail: 'E-mail melder',
+    reporterName: 'Naam melder',
+    singular: 'Supportmelding',
+    status: 'Status',
+    statusFailed: 'Mislukt',
+    statusPending: 'In behandeling',
+    statusSent: 'Verstuurd',
+    title: 'Titel',
+  },
+}

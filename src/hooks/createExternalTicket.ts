@@ -45,10 +45,14 @@ export const createExternalTicketHook =
       payload: req.payload,
     })
 
-    markdown = appendReporterFooter(markdown, {
-      name: doc.reporterName,
-      email: doc.reporterEmail,
-    })
+    markdown = appendReporterFooter(
+      markdown,
+      {
+        name: doc.reporterName,
+        email: doc.reporterEmail,
+      },
+      (key, vars) => req.i18n.t(key as Parameters<typeof req.i18n.t>[0], vars),
+    )
 
     const adapter = createShortcutAdapter(options.shortcut)
 

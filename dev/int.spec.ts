@@ -1,20 +1,23 @@
 import type { Payload } from 'payload'
+import type { PayloadSupportTranslations } from 'payload-support'
 
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest'
 
+import type { SupportReport } from './payload-types.js'
+
 let payload: Payload
 
 afterAll(async () => {
-  await payload.destroy()
+  await payload?.destroy()
 })
 
 beforeAll(async () => {
   payload = await getPayload({ config })
 })
 
-const boldDescription = {
+const boldDescription: SupportReport['description'] = {
   root: {
     type: 'root',
     children: [
@@ -23,11 +26,11 @@ const boldDescription = {
         children: [
           {
             type: 'text',
-            text: 'The button is broken',
-            format: 1,
             detail: 0,
+            format: 1,
             mode: 'normal',
             style: '',
+            text: 'The button is broken',
             version: 1,
           },
         ],
@@ -44,21 +47,38 @@ const boldDescription = {
   },
 }
 
+const pluginI18n = (lang: 'en' | 'nl') =>
+  (payload.config.i18n.translations?.[lang] as PayloadSupportTranslations | undefined)?.[
+    'plugin-payload-support'
+  ]
+
 describe('payload-support', () => {
   test('adds the support-reports collection', () => {
     expect(payload.collections['support-reports']).toBeDefined()
   })
 
-  test('creates a Shortcut bug from a support report', async () => {
-    const shortcutFetch = vi.fn(async () => {
-      return new Response(
-        JSON.stringify({
-          id: 555,
-          app_url: 'https://app.shortcut.com/eagerly/story/555',
-        }),
-        { status: 201, headers: { 'Content-Type': 'application/json' } },
-      )
+  test('merges English and Dutch plugin translations', () => {
+    expect(pluginI18n('en')).toMatchObject({
+      plural: 'Support Reports',
+      singular: 'Support Report',
     })
+    expect(pluginI18n('nl')).toMatchObject({
+      singular: 'Supportmelding',
+    })
+  })
+
+  test('creates a Shortcut bug from a support report', async () => {
+    const shortcutFetch = vi.fn<typeof fetch>(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            id: 555,
+            app_url: 'https://app.shortcut.com/eagerly/story/555',
+          }),
+          { headers: { 'Content-Type': 'application/json' }, status: 201 },
+        ),
+      ),
+    )
 
     vi.stubGlobal('fetch', shortcutFetch)
 
@@ -66,10 +86,10 @@ describe('payload-support', () => {
       const report = await payload.create({
         collection: 'support-reports',
         data: {
-          title: 'Checkout fails',
           description: boldDescription,
-          reporterName: 'Test User',
           reporterEmail: 'dev@payloadcms.com',
+          reporterName: 'Test User',
+          title: 'Checkout fails',
         },
       })
 
@@ -78,7 +98,12 @@ describe('payload-support', () => {
       expect(report.externalId).toBe('555')
       expect(report.externalUrl).toBe('https://app.shortcut.com/eagerly/story/555')
 
-      const body = JSON.parse(String(shortcutFetch.mock.calls[0]?.[1]?.body))
+      const rawBody = shortcutFetch.mock.calls[0]?.[1]?.body
+      if (typeof rawBody !== 'string') {
+        throw new Error('expected fetch body to be a string')
+      }
+
+      const body = JSON.parse(rawBody)
       expect(body.story_type).toBe('bug')
       expect(body.story_template_id).toBe('66703692-42a0-457d-b9c0-34e04b9a5a07')
       expect(body.name).toBe('Checkout fails')

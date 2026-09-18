@@ -7,6 +7,7 @@ export const defaultESLintIgnores = [
   '**/.*', // ignore all dotfiles
   '**/.git',
   '**/.hg',
+  '**/.next/**',
   '**/.pnp.*',
   '**/.svn',
   '**/playwright.config.ts',
@@ -15,6 +16,10 @@ export const defaultESLintIgnores = [
   '**/README.md',
   '**/eslint.config.js',
   '**/payload-types.ts',
+  '**/importMap.js',
+  'dev/app/(payload)/admin/**',
+  'dev/app/(payload)/api/**',
+  'dev/app/(payload)/layout.tsx',
   '**/dist/',
   '**/.yarn/',
   '**/build/',
@@ -23,6 +28,9 @@ export const defaultESLintIgnores = [
 ]
 
 export default [
+  {
+    ignores: defaultESLintIgnores,
+  },
   ...payloadEsLintConfig,
   {
     rules: {

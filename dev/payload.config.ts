@@ -3,6 +3,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import path from 'path'
 import { buildConfig } from 'payload'
+import { en } from 'payload/i18n/en'
+import { nl } from 'payload/i18n/nl'
 import { payloadSupportPlugin } from 'payload-support'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
@@ -65,6 +67,9 @@ const buildConfigWithMemoryDB = async () => {
     }),
     editor: lexicalEditor(),
     email: testEmailAdapter,
+    i18n: {
+      supportedLanguages: { en, nl },
+    },
     onInit: async (payload) => {
       await seed(payload)
     },
@@ -72,11 +77,11 @@ const buildConfigWithMemoryDB = async () => {
       payloadSupportPlugin({
         enabled: Boolean(process.env.SHORTCUT_TOKEN) || process.env.NODE_ENV === 'test',
         shortcut: {
-          token: process.env.SHORTCUT_TOKEN || (process.env.NODE_ENV === 'test' ? 'test-token' : ''),
           storyTemplateId:
             process.env.SHORTCUT_STORY_TEMPLATE_ID ||
             (process.env.NODE_ENV === 'test' ? '66703692-42a0-457d-b9c0-34e04b9a5a07' : undefined),
           storyType: 'bug',
+          token: process.env.SHORTCUT_TOKEN || (process.env.NODE_ENV === 'test' ? 'test-token' : ''),
         },
       }),
     ],

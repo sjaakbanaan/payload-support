@@ -15,7 +15,7 @@ import {
  * Markdown-safe Lexical subset so bold/italic/lists/links survive conversion
  * into Shortcut's markdown editor.
  */
-export const descriptionEditor = lexicalEditor({
+export const descriptionEditor: ReturnType<typeof lexicalEditor> = lexicalEditor({
   features: [
     ParagraphFeature(),
     BoldFeature(),
