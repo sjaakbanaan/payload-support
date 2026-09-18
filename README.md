@@ -2,7 +2,7 @@
 
 Payload CMS plugin that lets admin users file bug reports and send them to [Shortcut](https://shortcut.com) as stories.
 
-v1 ships a single provider (Shortcut), a title + Lexical description, and template-based story creation. Screenshots and extra providers can come later.
+0.5 is a beta: a single provider (Shortcut), a title + Lexical description, and template-based story creation. Screenshots and extra providers can come later.
 
 ## Install
 

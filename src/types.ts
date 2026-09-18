@@ -79,7 +79,7 @@ export type PayloadSupportPluginConfig = {
    */
   enabled?: boolean
   /**
-   * Support provider. Only Shortcut is implemented in v1.
+   * Support provider. Only Shortcut is implemented in this beta.
    * @default 'shortcut'
    */
   provider?: 'shortcut'

@@ -50,10 +50,6 @@ const buildConfigWithMemoryDB = async () => {
         ],
       },
       {
-        slug: 'posts',
-        fields: [],
-      },
-      {
         slug: 'media',
         fields: [],
         upload: {
