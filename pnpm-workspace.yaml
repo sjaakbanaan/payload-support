@@ -1,0 +1,18 @@
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  mongodb-memory-server: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - '@payloadcms/db-mongodb@3.90.0'
+  - '@payloadcms/db-postgres@3.90.0'
+  - '@payloadcms/db-sqlite@3.90.0'
+  - '@payloadcms/drizzle@3.90.0'
+  - '@payloadcms/graphql@3.90.0'
+  - '@payloadcms/next@3.90.0'
+  - '@payloadcms/richtext-lexical@3.90.0'
+  - '@payloadcms/translations@3.90.0'
+  - '@payloadcms/ui@3.90.0'
+  - payload@3.90.0

@@ -1,0 +1,91 @@
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { MongoMemoryReplSet } from 'mongodb-memory-server'
+import path from 'path'
+import { buildConfig } from 'payload'
+import { payloadSupportPlugin } from 'payload-support'
+import sharp from 'sharp'
+import { fileURLToPath } from 'url'
+
+import { testEmailAdapter } from './helpers/testEmailAdapter.js'
+import { seed } from './seed.js'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+if (!process.env.ROOT_DIR) {
+  process.env.ROOT_DIR = dirname
+}
+
+const buildConfigWithMemoryDB = async () => {
+  if (process.env.NODE_ENV === 'test') {
+    const memoryDB = await MongoMemoryReplSet.create({
+      replSet: {
+        count: 3,
+        dbName: 'payloadmemory',
+      },
+    })
+
+    process.env.DATABASE_URL = `${memoryDB.getUri()}&retryWrites=true`
+  }
+
+  return buildConfig({
+    admin: {
+      importMap: {
+        baseDir: path.resolve(dirname),
+      },
+      user: 'users',
+    },
+    collections: [
+      {
+        slug: 'users',
+        auth: true,
+        fields: [
+          {
+            name: 'name',
+            type: 'text',
+          },
+        ],
+      },
+      {
+        slug: 'posts',
+        fields: [],
+      },
+      {
+        slug: 'media',
+        fields: [],
+        upload: {
+          staticDir: path.resolve(dirname, 'media'),
+        },
+      },
+    ],
+    db: mongooseAdapter({
+      ensureIndexes: true,
+      url: process.env.DATABASE_URL || '',
+    }),
+    editor: lexicalEditor(),
+    email: testEmailAdapter,
+    onInit: async (payload) => {
+      await seed(payload)
+    },
+    plugins: [
+      payloadSupportPlugin({
+        enabled: Boolean(process.env.SHORTCUT_TOKEN) || process.env.NODE_ENV === 'test',
+        shortcut: {
+          token: process.env.SHORTCUT_TOKEN || (process.env.NODE_ENV === 'test' ? 'test-token' : ''),
+          storyTemplateId:
+            process.env.SHORTCUT_STORY_TEMPLATE_ID ||
+            (process.env.NODE_ENV === 'test' ? '66703692-42a0-457d-b9c0-34e04b9a5a07' : undefined),
+          storyType: 'bug',
+        },
+      }),
+    ],
+    secret: process.env.PAYLOAD_SECRET || 'test-secret_key',
+    sharp,
+    typescript: {
+      outputFile: path.resolve(dirname, 'payload-types.ts'),
+    },
+  })
+}
+
+export default buildConfigWithMemoryDB()
