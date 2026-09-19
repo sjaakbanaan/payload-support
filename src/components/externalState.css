@@ -1,0 +1,20 @@
+.payload-support-external-state {
+  background: var(--theme-elevation-100);
+  border-radius: 1em;
+  color: var(--theme-elevation-800);
+  display: inline-block;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  padding: 0.125rem 0.625rem;
+  white-space: nowrap;
+}
+
+.payload-support-external-state--done {
+  background: var(--theme-success-100);
+  color: var(--theme-success-750);
+}
+
+.payload-support-external-state--started {
+  background: var(--theme-warning-100);
+  color: var(--theme-warning-650);
+}

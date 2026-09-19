@@ -60,7 +60,6 @@ describe('payload-support', () => {
       'title',
       'reporterName',
       'reporterEmail',
-      'status',
       'externalState',
       'externalUrl',
       'createdAt',
@@ -97,7 +96,9 @@ describe('payload-support', () => {
       if (href.endsWith('/workflows')) {
         return Promise.resolve(
           new Response(
-            JSON.stringify([{ states: [{ id: 9, name: 'Ready for Development' }] }]),
+            JSON.stringify([
+              { states: [{ id: 9, name: 'Ready for Development', type: 'unstarted' }] },
+            ]),
             { headers: { 'Content-Type': 'application/json' }, status: 200 },
           ),
         )
@@ -133,6 +134,7 @@ describe('payload-support', () => {
       expect(report.externalId).toBe('555')
       expect(report.externalUrl).toBe('https://app.shortcut.com/eagerly/story/555')
       expect(report.externalState).toBe('Ready for Development')
+      expect(report.externalStateType).toBe('unstarted')
 
       const createCall = shortcutFetch.mock.calls.find(([requestUrl]) => {
         const href =

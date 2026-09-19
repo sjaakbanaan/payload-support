@@ -4,7 +4,7 @@ export const DEFAULT_COLLECTION_SLUG = 'support-reports'
 export const SKIP_SYNC_CONTEXT = 'payload-support-skip-sync'
 export const STATE_SYNC_QUEUE = 'payload-support'
 export const STATE_SYNC_TASK_SLUG = 'syncSupportReportStates'
-export const STATE_SYNC_CRON = '*/10 * * * *'
+export const STATE_SYNC_CRON = '*/5 * * * *'
 
 export const sanitizePluginConfig = (
   options: PayloadSupportPluginConfig = {},

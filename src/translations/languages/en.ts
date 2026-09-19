@@ -7,6 +7,7 @@ export const en = {
     externalId: 'External ID',
     externalIdDescription: 'Shortcut story ID',
     externalState: 'Shortcut state',
+    externalStateType: 'Shortcut state type',
     externalUrl: 'External URL',
     externalUrlDescription: 'Open this URL in Shortcut',
     group: 'Support',

@@ -5,24 +5,29 @@ import {
   createShortcutStory,
   getShortcutStory,
   listWorkflowStates,
-  resolveWorkflowStateName,
+  resolveWorkflowState,
   ShortcutApiError,
 } from '../src/providers/shortcut.js'
 
 const token = 'test-token'
 const templateId = '66703692-42a0-457d-b9c0-34e04b9a5a07'
 
-describe('resolveWorkflowStateName', () => {
-  test('returns the mapped name or null', () => {
-    const states = new Map([[500000001, 'Ready for Development']])
-    expect(resolveWorkflowStateName(500000001, states)).toBe('Ready for Development')
-    expect(resolveWorkflowStateName(999, states)).toBeNull()
-    expect(resolveWorkflowStateName(undefined, states)).toBeNull()
+describe('resolveWorkflowState', () => {
+  test('returns the mapped state or null', () => {
+    const states = new Map([
+      [500000001, { name: 'Ready for Development', type: 'unstarted' as const }],
+    ])
+    expect(resolveWorkflowState(500000001, states)).toEqual({
+      name: 'Ready for Development',
+      type: 'unstarted',
+    })
+    expect(resolveWorkflowState(999, states)).toBeNull()
+    expect(resolveWorkflowState(undefined, states)).toBeNull()
   })
 })
 
 describe('listWorkflowStates', () => {
-  test('flattens workflow states into an id → name map', async () => {
+  test('flattens workflow states into an id → name + type map', async () => {
     const fetchImpl = vi.fn<typeof fetch>((url) => {
       expect(url).toBe('https://api.app.shortcut.com/api/v3/workflows')
       return Promise.resolve(
@@ -30,12 +35,15 @@ describe('listWorkflowStates', () => {
           JSON.stringify([
             {
               states: [
-                { id: 1, name: 'Backlog' },
-                { id: 2, name: 'In Progress' },
+                { id: 1, name: 'Backlog', type: 'backlog' },
+                { id: 2, name: 'In Progress', type: 'started' },
               ],
             },
             {
-              states: [{ id: 3, name: 'Done' }],
+              states: [
+                { id: 3, name: 'Done', type: 'done' },
+                { id: 4, name: 'Odd', type: 'something-new' },
+              ],
             },
           ]),
           { headers: { 'Content-Type': 'application/json' }, status: 200 },
@@ -45,9 +53,10 @@ describe('listWorkflowStates', () => {
 
     const states = await listWorkflowStates({ token }, fetchImpl)
     expect(Object.fromEntries(states)).toEqual({
-      1: 'Backlog',
-      2: 'In Progress',
-      3: 'Done',
+      1: { name: 'Backlog', type: 'backlog' },
+      2: { name: 'In Progress', type: 'started' },
+      3: { name: 'Done', type: 'done' },
+      4: { name: 'Odd', type: null },
     })
   })
 })
@@ -174,7 +183,9 @@ describe('createShortcutAdapter', () => {
       if (href.endsWith('/workflows')) {
         return Promise.resolve(
           new Response(
-            JSON.stringify([{ states: [{ id: 7, name: 'Ready for Development' }] }]),
+            JSON.stringify([
+              { states: [{ id: 7, name: 'Ready for Development', type: 'unstarted' }] },
+            ]),
             { headers: { 'Content-Type': 'application/json' }, status: 200 },
           ),
         )
@@ -199,6 +210,7 @@ describe('createShortcutAdapter', () => {
       id: '42',
       url: 'https://app.shortcut.com/story/42',
       workflowState: 'Ready for Development',
+      workflowStateType: 'unstarted',
     })
   })
 })

@@ -14,6 +14,7 @@ type ShortcutWorkflowResponse = {
   states?: Array<{
     id?: number
     name?: string
+    type?: string
   }>
 }
 
@@ -21,6 +22,16 @@ export type ShortcutStory = {
   id: string
   url: string
   workflowStateId?: number
+}
+
+/** Shortcut groups every workflow column under one of these types. */
+export const WORKFLOW_STATE_TYPES = ['backlog', 'done', 'started', 'unstarted'] as const
+
+export type ShortcutWorkflowStateType = (typeof WORKFLOW_STATE_TYPES)[number]
+
+export type ShortcutWorkflowState = {
+  name: string
+  type: null | ShortcutWorkflowStateType
 }
 
 export class ShortcutApiError extends Error {
@@ -74,10 +85,13 @@ const toStory = (story: ShortcutStoryResponse, fallbackStatus: number): Shortcut
   }
 }
 
-export const resolveWorkflowStateName = (
+const toStateType = (type: string | undefined): null | ShortcutWorkflowStateType =>
+  WORKFLOW_STATE_TYPES.find((known) => known === type) ?? null
+
+export const resolveWorkflowState = (
   stateId: number | undefined,
-  states: Map<number, string>,
-): null | string => {
+  states: Map<number, ShortcutWorkflowState>,
+): null | ShortcutWorkflowState => {
   if (typeof stateId !== 'number') {
     return null
   }
@@ -87,19 +101,19 @@ export const resolveWorkflowStateName = (
 export const listWorkflowStates = async (
   config: ShortcutProviderConfig,
   fetchImpl: FetchLike = fetch,
-): Promise<Map<number, string>> => {
+): Promise<Map<number, ShortcutWorkflowState>> => {
   const response = await fetchImpl(`${SHORTCUT_API}/workflows`, {
     headers: authHeaders(config.token),
     method: 'GET',
   })
 
   const workflows = await parseJson<ShortcutWorkflowResponse[]>(response)
-  const states = new Map<number, string>()
+  const states = new Map<number, ShortcutWorkflowState>()
 
   for (const workflow of workflows) {
     for (const state of workflow.states ?? []) {
       if (typeof state.id === 'number' && typeof state.name === 'string' && state.name) {
-        states.set(state.id, state.name)
+        states.set(state.id, { name: state.name, type: toStateType(state.type) })
       }
     }
   }
@@ -171,17 +185,18 @@ export const createShortcutAdapter = (config: ShortcutProviderConfig, fetchImpl?
   return {
     createBug: async (input: CreateBugInput): Promise<CreatedTicket> => {
       const story = await createShortcutStory(config, input, fetchFn)
-      let workflowState: null | string = null
+      let state: null | ShortcutWorkflowState = null
 
       if (typeof story.workflowStateId === 'number') {
         const states = await listWorkflowStates(config, fetchFn)
-        workflowState = resolveWorkflowStateName(story.workflowStateId, states)
+        state = resolveWorkflowState(story.workflowStateId, states)
       }
 
       return {
         id: story.id,
         url: story.url,
-        workflowState,
+        workflowState: state?.name ?? null,
+        workflowStateType: state?.type ?? null,
       }
     },
     getStory: (storyId: string) => getShortcutStory(config, storyId, fetchFn),

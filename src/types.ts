@@ -46,6 +46,8 @@ export type CreatedTicket = {
   url: string
   /** Shortcut workflow column name, when resolvable. */
   workflowState?: null | string
+  /** Shortcut workflow column type: backlog, unstarted, started or done. */
+  workflowStateType?: 'backlog' | 'done' | 'started' | 'unstarted' | null
 }
 
 export type SupportProviderAdapter = {

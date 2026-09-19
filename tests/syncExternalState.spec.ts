@@ -11,9 +11,14 @@ describe('createSyncExternalStateTask', () => {
       .fn()
       .mockResolvedValueOnce({
         docs: [
-          { id: '1', externalId: '101', externalState: 'Backlog' },
-          { id: '2', externalId: '102', externalState: 'In Progress' },
-          { id: '3', externalId: '103', externalState: 'Done' },
+          { id: '1', externalId: '101', externalState: 'Backlog', externalStateType: 'backlog' },
+          {
+            id: '2',
+            externalId: '102',
+            externalState: 'In Progress',
+            externalStateType: 'started',
+          },
+          { id: '3', externalId: '103', externalState: 'Done', externalStateType: 'done' },
         ],
         hasNextPage: false,
       })
@@ -27,9 +32,9 @@ describe('createSyncExternalStateTask', () => {
             JSON.stringify([
               {
                 states: [
-                  { id: 1, name: 'Backlog' },
-                  { id: 2, name: 'In Progress' },
-                  { id: 3, name: 'Done' },
+                  { id: 1, name: 'Backlog', type: 'backlog' },
+                  { id: 2, name: 'In Progress', type: 'started' },
+                  { id: 3, name: 'Done', type: 'done' },
                 ],
               },
             ]),
@@ -98,7 +103,7 @@ describe('createSyncExternalStateTask', () => {
       expect(update).toHaveBeenCalledWith(
         expect.objectContaining({
           id: '1',
-          data: { externalState: 'In Progress' },
+          data: { externalState: 'In Progress', externalStateType: 'started' },
         }),
       )
     } finally {

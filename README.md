@@ -54,8 +54,8 @@ When `enabled` is `false`, the `support-reports` collection stays in the schema 
 1. Adds a **Support Reports** collection to the admin panel.
 2. On create, converts the Lexical description to Markdown (so **bold** in Payload stays `**bold**` in Shortcut).
 3. Creates a Shortcut story from your story template (`POST /api/v3/stories/from-template`).
-4. Stores the Shortcut story ID, URL, and workflow state name on the report.
-5. Registers a scheduled job (`syncSupportReportStates`, every 10 minutes on queue `payload-support`) that refreshes stored Shortcut states for sent reports.
+4. Stores the Shortcut story ID, URL, and workflow state (name plus its `backlog` / `unstarted` / `started` / `done` type) on the report. The list view colours the state green when it is done and amber while it is started, so open tickets stand out.
+5. Registers a scheduled job (`syncSupportReportStates`, every 5 minutes on queue `payload-support`) that refreshes stored Shortcut states for sent reports.
 
 Default access is any authenticated user. Override `access` or lock the collection down with your own RBAC plugin.
 

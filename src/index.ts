@@ -8,8 +8,11 @@ export {
   createShortcutStory,
   getShortcutStory,
   listWorkflowStates,
-  resolveWorkflowStateName,
+  resolveWorkflowState,
   ShortcutApiError,
+  type ShortcutWorkflowState,
+  type ShortcutWorkflowStateType,
+  WORKFLOW_STATE_TYPES,
 } from './providers/shortcut.js'
 export {
   type PayloadSupportTranslationKeys,

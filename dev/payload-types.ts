@@ -201,6 +201,7 @@ export interface SupportReport {
   status?: ('pending' | 'sent' | 'failed') | null;
   externalId?: string | null;
   externalState?: string | null;
+  externalStateType?: ('backlog' | 'unstarted' | 'started' | 'done') | null;
   externalUrl?: string | null;
   errorMessage?: string | null;
   reporterName?: string | null;
@@ -438,6 +439,7 @@ export interface SupportReportsSelect<T extends boolean = true> {
   status?: T;
   externalId?: T;
   externalState?: T;
+  externalStateType?: T;
   externalUrl?: T;
   errorMessage?: T;
   reporterName?: T;

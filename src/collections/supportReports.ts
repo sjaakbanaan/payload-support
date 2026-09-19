@@ -30,7 +30,6 @@ export const createSupportReportsCollection = (
         'title',
         'reporterName',
         'reporterEmail',
-        'status',
         'externalState',
         'externalUrl',
         'createdAt',
@@ -92,10 +91,28 @@ export const createSupportReportsCollection = (
         name: 'externalState',
         type: 'text',
         admin: {
+          components: {
+            Cell: 'payload-support/rsc#ExternalStateCell',
+          },
           position: 'sidebar',
           readOnly: true,
         },
         label: tLabel('externalState'),
+      },
+      {
+        // Drives the colour of the externalState cell; not shown on its own.
+        name: 'externalStateType',
+        type: 'select',
+        admin: {
+          hidden: true,
+        },
+        label: tLabel('externalStateType'),
+        options: [
+          { label: 'Backlog', value: 'backlog' },
+          { label: 'Unstarted', value: 'unstarted' },
+          { label: 'Started', value: 'started' },
+          { label: 'Done', value: 'done' },
+        ],
       },
       {
         name: 'externalUrl',

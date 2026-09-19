@@ -1,5 +1,6 @@
-import type { TaskConfig } from 'payload'
+import type { CollectionSlug, TaskConfig } from 'payload'
 
+import type { ShortcutWorkflowStateType } from '../providers/shortcut.js'
 import type { SanitizedPayloadSupportConfig } from '../types.js'
 
 import {
@@ -8,12 +9,20 @@ import {
   STATE_SYNC_QUEUE,
   STATE_SYNC_TASK_SLUG,
 } from '../defaults.js'
-import { createShortcutAdapter, resolveWorkflowStateName } from '../providers/shortcut.js'
+import { createShortcutAdapter, resolveWorkflowState } from '../providers/shortcut.js'
 
 type SyncOutput = {
   checked: number
   failed: number
   updated: number
+}
+
+/** The collection slug is configurable, so generated types cannot describe these docs. */
+type SupportReportDoc = {
+  externalId?: null | string
+  externalState?: null | string
+  externalStateType?: null | ShortcutWorkflowStateType
+  id: number | string
 }
 
 export const createSyncExternalStateTask = (
@@ -32,6 +41,8 @@ export const createSyncExternalStateTask = (
 
     const adapter = createShortcutAdapter(options.shortcut)
     const states = await adapter.listWorkflowStates()
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- CollectionSlug is `string` here, but a literal union in apps with generated types
+    const collection = options.collectionSlug as CollectionSlug
 
     let checked = 0
     let updated = 0
@@ -41,7 +52,7 @@ export const createSyncExternalStateTask = (
 
     while (hasNextPage) {
       const result = await req.payload.find({
-        collection: options.collectionSlug,
+        collection,
         limit: 50,
         page,
         pagination: true,
@@ -50,7 +61,7 @@ export const createSyncExternalStateTask = (
         },
       })
 
-      for (const doc of result.docs) {
+      for (const doc of result.docs as unknown as SupportReportDoc[]) {
         const externalId =
           typeof doc.externalId === 'string' && doc.externalId ? doc.externalId : null
         if (!externalId) {
@@ -61,22 +72,24 @@ export const createSyncExternalStateTask = (
 
         try {
           const story = await adapter.getStory(externalId)
-          const nextState = resolveWorkflowStateName(story.workflowStateId, states)
-          const currentState =
-            typeof doc.externalState === 'string' || doc.externalState === null
-              ? doc.externalState
-              : null
+          const state = resolveWorkflowState(story.workflowStateId, states)
+          const nextState = state?.name ?? null
+          const nextStateType = state?.type ?? null
 
-          if (nextState === currentState) {
+          if (
+            nextState === (doc.externalState ?? null) &&
+            nextStateType === (doc.externalStateType ?? null)
+          ) {
             continue
           }
 
           await req.payload.update({
             id: doc.id,
-            collection: options.collectionSlug,
+            collection,
             context: { [SKIP_SYNC_CONTEXT]: true },
             data: {
               externalState: nextState,
+              externalStateType: nextStateType,
             },
             req,
           })
