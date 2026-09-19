@@ -93,6 +93,7 @@ export const createSupportReportsCollection = (
         admin: {
           components: {
             Cell: 'payload-support/rsc#ExternalStateCell',
+            Field: 'payload-support/rsc#ExternalStateField',
           },
           position: 'sidebar',
           readOnly: true,

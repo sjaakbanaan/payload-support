@@ -1,0 +1,8 @@
+/*
+ * Payload gives the sticky sidebar a fixed height of the viewport minus the doc
+ * controls, which ignores the header above it, so the edit view scrolls past
+ * the end of its content. Scoped to documents that render our sidebar fields.
+ */
+.document-fields__sidebar-wrap:has(.payload-support-field) {
+  height: auto;
+}

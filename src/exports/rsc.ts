@@ -1,2 +1,2 @@
-export { ExternalStateCell } from '../components/ExternalState.js'
+export { ExternalStateCell, ExternalStateField } from '../components/ExternalState.js'
 export { ExternalUrlCell, ExternalUrlField } from '../components/ExternalUrl.js'

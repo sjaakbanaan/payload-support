@@ -1,6 +1,7 @@
 import type { DefaultServerCellComponentProps, TextFieldServerComponent } from 'payload'
 
 import './externalUrl.css'
+import './fieldLayout.css'
 
 const ExternalUrlLink = ({ value }: { value: unknown }) => {
   if (typeof value !== 'string' || !value) {
@@ -29,7 +30,7 @@ export const ExternalUrlField: TextFieldServerComponent = ({ clientField, path, 
     typeof clientField.admin?.description === 'string' ? clientField.admin.description : undefined
 
   return (
-    <div className="field-type">
+    <div className="field-type payload-support-field">
       {label ? (
         <label className="field-label" htmlFor={`field-${path}`}>
           {label}
