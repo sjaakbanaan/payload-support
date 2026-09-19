@@ -1,9 +1,10 @@
 import type { DefaultServerCellComponentProps, TextFieldServerComponent } from 'payload'
 
+import { NAMESPACE } from '../translations/constants.js'
 import './externalUrl.css'
 import './fieldLayout.css'
 
-const ExternalUrlLink = ({ value }: { value: unknown }) => {
+const ExternalUrlLink = ({ label, value }: { label: string; value: unknown }) => {
   if (typeof value !== 'string' || !value) {
     return null
   }
@@ -14,17 +15,21 @@ const ExternalUrlLink = ({ value }: { value: unknown }) => {
       href={value}
       rel="noopener noreferrer"
       target="_blank"
+      title={value}
     >
-      {value}
+      {label}
     </a>
   )
 }
 
-export const ExternalUrlCell = ({ cellData }: DefaultServerCellComponentProps) => (
-  <ExternalUrlLink value={cellData} />
+const shortcutLinkLabel = (t: DefaultServerCellComponentProps['i18n']['t']) =>
+  t(`${NAMESPACE}:externalUrlLink` as Parameters<typeof t>[0])
+
+export const ExternalUrlCell = ({ cellData, i18n }: DefaultServerCellComponentProps) => (
+  <ExternalUrlLink label={shortcutLinkLabel(i18n.t)} value={cellData} />
 )
 
-export const ExternalUrlField: TextFieldServerComponent = ({ clientField, path, value }) => {
+export const ExternalUrlField: TextFieldServerComponent = ({ clientField, i18n, path, value }) => {
   const label = typeof clientField.label === 'string' ? clientField.label : undefined
   const description =
     typeof clientField.admin?.description === 'string' ? clientField.admin.description : undefined
@@ -37,7 +42,7 @@ export const ExternalUrlField: TextFieldServerComponent = ({ clientField, path, 
         </label>
       ) : null}
       <div className="field-type__wrap">
-        <ExternalUrlLink value={value} />
+        <ExternalUrlLink label={shortcutLinkLabel(i18n.t)} value={value} />
         {description ? (
           <div className={`field-description field-description-${path}`}>{description}</div>
         ) : null}

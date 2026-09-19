@@ -35,6 +35,8 @@ export const createSupportReportsCollection = (
         'createdAt',
       ],
       description: tLabel('description') as NonNullable<CollectionConfig['admin']>['description'],
+      // Keep the edit view, but don't send list users there — tickets live in Shortcut.
+      formatDocURL: () => null,
       group: {
         en: en[NAMESPACE].group,
         nl: nl[NAMESPACE].group,

@@ -10,6 +10,7 @@ export const en = {
     externalStateType: 'Shortcut state type',
     externalUrl: 'External URL',
     externalUrlDescription: 'Open this URL in Shortcut',
+    externalUrlLink: 'Shortcut link',
     group: 'Support',
     plural: 'Support Reports',
     reportedBy: 'Reported by {{who}}',

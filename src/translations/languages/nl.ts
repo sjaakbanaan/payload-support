@@ -10,6 +10,7 @@ export const nl = {
     externalStateType: 'Shortcut-statustype',
     externalUrl: 'Externe URL',
     externalUrlDescription: 'Open deze URL in Shortcut',
+    externalUrlLink: 'Shortcut link',
     group: 'Support',
     plural: 'Supportmeldingen',
     reportedBy: 'Gemeld door {{who}}',

@@ -64,6 +64,14 @@ describe('payload-support', () => {
       'externalUrl',
       'createdAt',
     ])
+    expect(
+      collection.config.admin.formatDocURL?.({
+        collectionSlug: 'support-reports',
+        defaultURL: '/admin/collections/support-reports/1',
+        doc: { id: '1' },
+        req: {} as never,
+      }),
+    ).toBeNull()
 
     expect(payload.config.jobs?.tasks?.some((task) => task.slug === 'syncSupportReportStates')).toBe(
       true,
@@ -82,10 +90,12 @@ describe('payload-support', () => {
 
   test('merges English and Dutch plugin translations', () => {
     expect(pluginI18n('en')).toMatchObject({
+      externalUrlLink: 'Shortcut link',
       plural: 'Support Reports',
       singular: 'Support Report',
     })
     expect(pluginI18n('nl')).toMatchObject({
+      externalUrlLink: 'Shortcut link',
       singular: 'Supportmelding',
     })
   })
