@@ -1,7 +1,7 @@
 export const nl = {
   'plugin-payload-support': {
     description:
-      'Het aanmaken van een melding stuurt een bug naar Shortcut. Titel en beschrijving kunnen niet meer worden gewijzigd nadat de melding is verstuurd.',
+      'Het aanmaken van een melding stuurt een bug naar Shortcut. Het bericht kan niet meer worden gewijzigd nadat de melding is verstuurd. Klik op de Shortcut link voor status informatie.',
     descriptionField: 'Beschrijving',
     errorMessage: 'Foutmelding',
     externalId: 'Extern ID',

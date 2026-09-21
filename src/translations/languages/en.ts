@@ -1,7 +1,7 @@
 export const en = {
   'plugin-payload-support': {
     description:
-      'Creating a report sends a bug to Shortcut. Title and description cannot be changed after it is sent.',
+      'Creating a report sends a bug to Shortcut. The message cannot be changed after it is sent. Click the Shortcut link for status information.',
     descriptionField: 'Description',
     errorMessage: 'Error message',
     externalId: 'External ID',
