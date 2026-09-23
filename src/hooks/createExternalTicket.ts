@@ -39,7 +39,7 @@ export const createExternalTicketHook =
     }
 
     const descriptionField = findDescriptionField(collection.fields)
-    let markdown = await convertDescriptionToMarkdown({
+    let markdown = convertDescriptionToMarkdown({
       data: doc.description,
       descriptionField,
       payload: req.payload,

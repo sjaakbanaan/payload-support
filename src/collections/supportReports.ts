@@ -187,6 +187,8 @@ export const createSupportReportsCollection = (
       singular: tLabel('singular'),
     },
     timestamps: true,
+    // Payload 4 enables versions by default. Reports are a write-once log, so keep the previous schema.
+    versions: false,
   }
 
   return options.collectionOverrides

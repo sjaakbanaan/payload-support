@@ -20,10 +20,13 @@ if (!process.env.ROOT_DIR) {
 }
 
 const buildConfigWithMemoryDB = async () => {
+  let memoryDB: MongoMemoryReplSet | undefined
+
   if (process.env.NODE_ENV === 'test') {
-    const memoryDB = await MongoMemoryReplSet.create({
+    memoryDB = await MongoMemoryReplSet.create({
       replSet: {
-        count: 3,
+        // One member avoids primary step-downs while the rest of the suite is running.
+        count: 1,
         dbName: 'payloadmemory',
       },
     })
@@ -48,6 +51,7 @@ const buildConfigWithMemoryDB = async () => {
             type: 'text',
           },
         ],
+        versions: false,
       },
       {
         slug: 'media',
@@ -55,10 +59,12 @@ const buildConfigWithMemoryDB = async () => {
         upload: {
           staticDir: path.resolve(dirname, 'media'),
         },
+        versions: false,
       },
     ],
     db: mongooseAdapter({
       ensureIndexes: true,
+      mongoMemoryServer: memoryDB,
       url: process.env.DATABASE_URL || '',
     }),
     editor: lexicalEditor(),

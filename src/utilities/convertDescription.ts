@@ -5,7 +5,7 @@ import { convertLexicalToMarkdown, editorConfigFactory } from '@payloadcms/richt
 
 import { lexicalToPlaintext } from './lexicalToPlaintext.js'
 
-export const convertDescriptionToMarkdown = async ({
+export const convertDescriptionToMarkdown = ({
   data,
   descriptionField,
   payload,
@@ -13,7 +13,7 @@ export const convertDescriptionToMarkdown = async ({
   data: unknown
   descriptionField?: RichTextField
   payload: Payload
-}): Promise<string> => {
+}): string => {
   if (!data || typeof data !== 'object') {
     return ''
   }
@@ -21,7 +21,7 @@ export const convertDescriptionToMarkdown = async ({
   try {
     const editorConfig = descriptionField
       ? editorConfigFactory.fromField({ field: descriptionField })
-      : await editorConfigFactory.default({ config: payload.config })
+      : editorConfigFactory.default({ config: payload.config })
 
     return convertLexicalToMarkdown({
       data: data as SerializedEditorState,

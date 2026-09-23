@@ -10,7 +10,7 @@ Payload CMS plugin that lets admin users file bug reports and send them to [Shor
 pnpm add payload-support
 ```
 
-Peer dependencies: `payload` and `@payloadcms/richtext-lexical`.
+Requires Payload 4 (`payload` and `@payloadcms/richtext-lexical`) and Node.js 24.15 or newer. The current 4.x release is `4.0.0-canary.36`.
 
 ## Usage
 

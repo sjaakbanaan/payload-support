@@ -37,6 +37,8 @@ const boldDescription: SupportReport['description'] = {
         direction: 'ltr',
         format: '',
         indent: 0,
+        textFormat: 0,
+        textStyle: '',
         version: 1,
       },
     ],
